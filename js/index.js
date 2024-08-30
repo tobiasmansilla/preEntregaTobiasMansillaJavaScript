@@ -1,143 +1,182 @@
-
-function mostrarMensajeBienvenida() {
-    alert("¡Bienvenido a Music Store Argentina!");
-    console.warn("Nuevo ingreso!");
-}
-
 function obtenerDatosUsuario() {
-    let nombreCompleto = prompt("Ingrese sus datos: (Nombre + Apellido)");
-    console.log("Se ha registrado a: " + nombreCompleto);
-    
-    let edad = prompt("¿Cuál es tu edad?");
-    if (edad >= 18) {
-        console.log(nombreCompleto + " es mayor de edad." + " (" + edad + " años.)");
-    } else {
-        console.log(nombreCompleto + " es menor de edad." + " (" + edad + " años.)");
-    }
-    
-    return nombreCompleto;
+    const nombreCompleto = document.getElementById("nombreCompleto").value;
+    const edad = document.getElementById("edad").value;
+
+    const usuario = { nombre: nombreCompleto, edad: edad };
+    localStorage.setItem('usuario', JSON.stringify(usuario));
+
+    const primerNombre = nombreCompleto.split(' ')[0];
+    document.getElementById("mensajeBienvenida").textContent = `¡Bienvenido, ${primerNombre}!`;
 }
 
-mostrarMensajeBienvenida();
-obtenerDatosUsuario();
+function crearArtista() {
+    const artistaSeleccionado = document.getElementById("nombreArtista").value;
 
-// Funciones para cálculos de precio
-function calcularIVA(precioBase) {
-    return Math.round(precioBase * 1.21);
+    const artista = { nombre: artistaSeleccionado };
+    localStorage.setItem('artista', JSON.stringify(artista));
+
+    document.getElementById("tituloProductos").textContent = `Productos disponibles: ${artistaSeleccionado}`;
 }
 
-function calcularPrecioPais(precioBase) {
-    return Math.round(precioBase * 1.08);
-}
-
-function convertirADolares(precioPesos) {
-    return Math.round(precioPesos / 300); // Supongamos un tipo de cambio de 300 pesos por dólar
-}
-
-function formatearPrecio(precio) {
-    return precio.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); // IA
-}
-
-// Definición de las clases
-class Artista {
-    constructor(nombre) {
-        this.nombre = nombre;
-    }
-}
-
-class Producto {
-    constructor(nombre, precio) {
-        this.nombre = nombre;
-        this.precio = precio;
-        this.cantidad = 0;
-    }
-
-    agregarCantidad(cantidad) {
-        this.cantidad += cantidad;
-    }
-
-    calcularTotal() {
-        return this.precio * this.cantidad;
-    }
-}
-
-// Crear un nuevo artista
-let nombreDelArtista = prompt("Ingrese el nombre del artista");
-const artista = new Artista(nombreDelArtista);
-console.log("Artista seleccionado:", artista.nombre);
-
-// Crear productos disponibles
+// productos / precios
 const productos = [
-    new Producto('Merchandising', 30000),
-    new Producto('Vinilos', 15000),
-    new Producto('Streaming', 3500),
-    new Producto('Conciertos', 4500)
+    { nombre: "Merchandising", precio: 100 },
+    { nombre: "Vinilos", precio: 200 },
+    { nombre: "Streaming", precio: 50 },
+    { nombre: "Conciertos", precio: 500 }
 ];
 
-// Ciclo para manejar la elección de secciones
-let eleccionDeSeccion = "0";
-while (eleccionDeSeccion !== "6") {
-    eleccionDeSeccion = prompt("¿Qué formato quisiera visualizar? \n1 - PRECIOS!\n2 - Vinilos\n3 - Streaming\n4 - Conciertos\n5 - Merchandising\n6 - Comprar");
-    switch (eleccionDeSeccion) {
-        case "1":
-            alert('Precios:\n' + 
-            productos.map(p => `${p.nombre}: $${formatearPrecio(p.precio)}`).join('\n'));
-            break;
-        case "2":
-            productos[1].agregarCantidad(parseInt(prompt("¿Cuántas unidades de 'Vinilos' desea comprar?"))); // Vinilos
-            break;
-        case "3":
-            productos[2].agregarCantidad(parseInt(prompt("¿Cuántos meses de 'Streaming' desea comprar?"))); // Streaming
-            break;
-        case "4":
-            productos[3].agregarCantidad(parseInt(prompt("¿Cuántas entradas de 'Conciertos' desea comprar?"))); // Conciertos
-            break;
-        case "5":
-            productos[0].agregarCantidad(parseInt(prompt("¿Cuántas unidades de 'Merchandising' desea comprar?"))); // Merchandising
-            break;
-        case "6":
-            break;
-        default:
-            alert("No eligió una opción válida.");
-    }
+// carrito
+let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+// mostrar precios
+function mostrarPrecios() {
+    const preciosProductos = document.getElementById("preciosProductos");
+    preciosProductos.innerHTML = ""; // Limpiar contenido previo
+
+    productos.forEach((producto, indice) => {
+        const productoHTML = document.createElement("div");
+        productoHTML.innerHTML = `
+            <p>${producto.nombre}: $${producto.precio} 
+            <button onclick="agregarProducto(${indice}, 1)">Agregar al carrito</button></p>
+        `;
+        preciosProductos.appendChild(productoHTML);
+    });
 }
 
-// Calcular el total de la compra
-const eDSTotalPesos = productos.reduce((total, producto) => total + producto.calcularTotal(), 0);
-const eDSTotalConIVA = calcularIVA(eDSTotalPesos);
-const eDSTotalFinal = calcularPrecioPais(eDSTotalConIVA);
-const eDSTotalDolares = convertirADolares(eDSTotalFinal);
-
-console.log("Total de la compra en pesos:", formatearPrecio(eDSTotalFinal));
-console.log("Total de la compra en dólares:", formatearPrecio(eDSTotalDolares));
-
-// Calcular opciones de cuotas
-let cuota2 = Math.round(eDSTotalFinal / 2);
-let cuota3 = Math.round(eDSTotalFinal / 3);
-let cuota4 = Math.round((eDSTotalFinal * 1.10) / 4);
-let cuota5 = Math.round((eDSTotalFinal * 1.10) / 5);
-let cuota6 = Math.round((eDSTotalFinal * 1.10) / 6);
-
-let cuotas = prompt("¿Desea hacerlo en cuotas?");
-if (cuotas === "si") {
-    let cantidadCuotas = parseInt(prompt(
-        "Cantidad de cuotas:\n" +
-        "1 Cuota de $" + formatearPrecio(eDSTotalFinal) + "\n" +
-        "2 Cuotas de $" + formatearPrecio(cuota2) + "\n" +
-        "3 Cuotas de $" + formatearPrecio(cuota3) + "\n" +
-        "4 Cuotas de $" + formatearPrecio(cuota4) + " (10% de interés)\n" +
-        "5 Cuotas de $" + formatearPrecio(cuota5) + " (10% de interés)\n" +
-        "6 Cuotas de $" + formatearPrecio(cuota6) + " (10% de interés)\n" +
-        "Por favor elija un número de cuotas, de lo contrario, no podrá hacer la compra!"
-    ));
-    if (!isNaN(cantidadCuotas)) { //(!isNaN proveía un error y mostraba NaN al mostrar la cantidad de cuotas)
-        alert("El precio final del producto es: $" + formatearPrecio(eDSTotalFinal) + " pesos (" + formatearPrecio(eDSTotalDolares) + " USD)");
-        alert("Transacción realizada. ¡Gracias por su compra realizada en " + cantidadCuotas + " cuotas!");
-        console.log("Transacción realizada en " + cantidadCuotas + " cuotas.");
+// agregar prod
+function agregarProducto(indiceProducto, cantidad = 1) {
+    const producto = productos[indiceProducto];
+    const itemCarrito = { ...producto, cantidad: cantidad };
+    const index = carrito.findIndex(item => item.nombre === producto.nombre);
+    if (index !== -1) {
+        carrito[index].cantidad += cantidad;
     } else {
-        alert("Número de cuotas no válido.");
+        carrito.push(itemCarrito);
     }
-} else {
-    alert("Gracias por su compra. Transacción realizada!");
-    console.log("Transacción realizada en un pago.");
+
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    alert(`${producto.nombre} agregado al carrito.`);
+    mostrarCarrito();
 }
+
+// mostrar carrito
+function mostrarCarrito() {
+    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+    const contenidoCarrito = document.getElementById("contenidoCarrito");
+    contenidoCarrito.innerHTML = "";
+
+    carrito.forEach((item, index) => {
+        const productoHTML = document.createElement("div");
+        productoHTML.innerHTML = `
+            <p>${item.nombre} - Cantidad: ${item.cantidad} - Precio Total: $${item.precio * item.cantidad}</p>
+            <button onclick="eliminarProducto(${index})">Eliminar</button>
+            <button onclick="reducirCantidad(${index})">Reducir Cantidad</button>
+            <button onclick="agregarCantidad(${index})">Agregar Cantidad</button>
+        `;
+        contenidoCarrito.appendChild(productoHTML);
+    });
+
+    if (carrito.length === 0) {
+        contenidoCarrito.innerHTML = "<p>El carrito está vacío.</p>";
+    }
+
+    calcularTotalCompra();
+}
+
+function eliminarProducto(index) {
+    carrito.splice(index, 1);
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    mostrarCarrito();
+}
+function reducirCantidad(index) {
+    if (carrito[index].cantidad > 1) {
+        carrito[index].cantidad -= 1;
+    } else {
+        carrito.splice(index, 1);
+    }
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    mostrarCarrito();
+}
+function agregarCantidad(index) {
+    carrito[index].cantidad += 1;
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    mostrarCarrito();
+}
+
+//calcular el total
+function calcularTotalCompra() {
+    const totalCompra = carrito.reduce((total, item) => total + item.precio * item.cantidad, 0);
+    document.getElementById("totalCompra").textContent = `Total de la Compra: $${totalCompra}`;
+}
+
+// cuotas
+function manejarCuotas() {
+    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+    let totalPesos = 0;
+
+    carrito.forEach(item => {
+        totalPesos += item.precio * item.cantidad;
+    });
+
+    const cantidadCuotas = parseInt(document.getElementById("cantidadCuotas").value);
+    if (cantidadCuotas > 0 && cantidadCuotas <= 12) {
+        const totalCuotas = totalPesos / cantidadCuotas;
+        document.getElementById("resultadoCuotas").textContent = `El total por cuota es: $${totalCuotas.toFixed(2)} en ${cantidadCuotas} cuotas.`;
+    } else {
+        document.getElementById("resultadoCuotas").textContent = "Por favor, ingrese una cantidad de cuotas válida (1-12).";
+    }
+}
+function realizarCompra() {
+    const totalCompra = carrito.reduce((total, item) => total + item.precio * item.cantidad, 0);
+    const cantidadCuotas = parseInt(document.getElementById("cantidadCuotas").value);
+
+    if (totalCompra > 0) {
+        let mensajeCompra = `¡Compra realizada por un total de $${totalCompra}!`;
+
+        if (cantidadCuotas > 0 && cantidadCuotas <= 12) {
+            const totalPorCuota = (totalCompra / cantidadCuotas).toFixed(2);
+            mensajeCompra += `\nCompraste en ${cantidadCuotas} cuotas de $${totalPorCuota}.`;
+        } else {
+            mensajeCompra += `\nHas comprado en una sola cuota de $${totalCompra}.`;
+        }
+
+        alert(mensajeCompra + "\n¡Gracias por tu compra!");
+
+        localStorage.setItem('ultimaCompra', JSON.stringify({
+            carrito: carrito,
+            total: totalCompra,
+            fecha: new Date().toISOString()
+        }));
+
+        localStorage.removeItem('carrito');
+        mostrarCarrito();
+    } else {
+        alert("El carrito está vacío. No hay nada que comprar.");
+    }
+}
+// datos del usuario y artista al inicio
+window.onload = function () {
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
+    if (usuario) {
+        const primerNombre = usuario.nombre.split(' ')[0];
+        document.getElementById("mensajeBienvenida").textContent = `¡Bienvenido, ${primerNombre}!`;
+    }
+
+    const artista = JSON.parse(localStorage.getItem('artista'));
+    if (artista) {
+        document.getElementById("tituloProductos").textContent = `Productos disponibles: ${artista.nombre}`;
+    }
+
+    mostrarCarrito();
+
+    // evento botón de compra
+    document.getElementById("comprar").addEventListener("click", realizarCompra);
+};
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const yearSpan = document.getElementById('year');
+    if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+    }
+});

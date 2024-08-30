@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Store</title>
+    <link rel="shortcut icon" href="../assets/img/logoMusic.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header class="hheader">
+        <nav>
+            <ul>
+                <a href="../index.html"><img src="../assets/img/logoMusic.png" alt=""></a>
+                <a href="../index.html"><li>INICIO</li></a>
+                <a href="/pages/tienda.html"><li>TIENDA</li></a>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="seccion-artista">
+            <h2>Elige un Artista</h2>
+            <label for="nombreArtista">Nombre del Artista:</label>
+            <input type="text" id="nombreArtista" required>
+            <button onclick="crearArtista()">Guardar Artista</button>
+        </section>
+    
+        <section class="seccion-productos">
+            <h2 id="tituloProductos">Productos disponibles:</h2>
+            <button onclick="mostrarPrecios()">Mostrar Precios</button>
+            <div id="preciosProductos"></div>
+        </section>
+    
+        <section class="seccion-carrito">
+            <h2>Carrito de Compras</h2>
+            <button onclick="mostrarCarrito()">Mostrar Carrito</button>
+            <div id="contenidoCarrito"></div>
+        </section>
+    
+        <section class="seccion-total">
+            <h2>Total de la Compra</h2>
+            <p id="totalPesos"></p>
+            <h3>Calcular Cuotas</h3>
+            <label for="cantidadCuotas">Número de Cuotas:</label>
+            <input type="number" id="cantidadCuotas" min="1" max="12">
+            <button onclick="manejarCuotas()">Calcular</button>
+            <p id="resultadoCuotas"></p>
+            <div id="totalCompraContainer">
+                <p id="totalCompra">Total de la Compra: $0</p>
+                <button onclick="realizarCompra()">Comprar</button>
+            </div>
+            
+        </section>
+    </main>
+    <footer class="ffooter">
+        <h2>Contactanos haciendo click en nuestras redes! &copy; <span id="year"></span></h2>
+        <ul>
+            <li>Instagram: <a href="https://www.instagram.com/"><img src="../assets/img/instagram-logo.png" alt=""></a></li>
+            <li>Twitter/X: <a href="https://www.x.com/"><img src="../assets/img/twitter-logo.png" alt=""></a></li>
+            <li>Facebook: <a href="https://www.facebook.com/"><img src="../assets/img/facebook-logo.png" alt=""></a></li>
+            <li>WhatsApp: <a href="https://www.whatsapp.com/"><img src="../assets/img/whatsapp-logo.png" alt=""></a></li>
+            <li>Mail: <a href="mailto:pedidos@musicstore.com.ar"><img src="../assets/img/mail-logo.png" alt=""></a></li>
+        </ul>
+    </footer>
+    <script src="../js/index.js"></script>
+</body>
+</html>

@@ -3,16 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pre Entrega 2</title>
+    <title>Home - Music Store</title>
+    <link rel="shortcut icon" href="../assets/img/logoMusic.ico" type="image/x-icon">
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-    <header>
+    <header class="hheader">
+        <nav>
+            <ul>
+                <a href="../index.html"><img src="../assets/img/logoMusic.png" alt="Logo"></a>
+                <a href="../index.html"><li>INICIO</li></a>
+                <a href="/pages/tienda.html"><li>TIENDA</li></a>
+            </ul>
+        </nav>
     </header>
     <main>
-        <h1>Pre Entrega 2 - Tobias Mansilla</h1>
+        <section class="welcome-section">
+            <h1>Bienvenido/a a Music Store!</h1>
+            <p class="subtitle">Tu sitio web para todo lo relacionado con la música. ¡Explorá nuestra colección de música, productos y más!</p>
+        </section>
+        <section class="seccion-datos">
+            <h2>Datos del Usuario</h2>
+            <label for="nombreCompleto">Nombre Completo:</label>
+            <input type="text" id="nombreCompleto" required>
+            <label for="edad">Edad:</label>
+            <input type="number" id="edad" required>
+            <button onclick="obtenerDatosUsuario()">Guardar Datos</button>
+            <p id="mensajeBienvenida"></p>
+        </section>
+        
+        <section class="artists-section">
+            <div>
+                <h2>Artistas Destacados</h2>
+                <img id="logoHome" src="./assets/img/logoMusic.png" alt="logoMusic">
+            </div>
+            <div class="artist">
+                <img src="assets/img/porCesareaDillom.jpg" alt="Artist 1">
+                <h3>Dillom - Por césarea</h3>
+                <p>Genre: hip hop, horrorcore, pop y rock, trap.</p>
+                <a href="pages/tienda.html">Comprar</a>
+            </div>
+            <div class="artist">
+                <img src="assets/img/writtingClassicsT&K.jpeg" alt="Artist 2">
+                <h3>T&K - Writing Classics</h3>
+                <p>Genre: rap, hip hop</p>
+                <a href="pages/tienda.html">Comprar</a>
+            </div>
+            <div class="artist">
+                <img src="assets/img/albumLosRedondos.jpg" alt="Artist 3">
+                <h3>Patricio Rey y sus Redonditos de Ricota - ¡Bang! ¡Bang! Estás liquidado</h3>
+                <p>Genre: rock</p>
+                <a href="pages/tienda.html">Comprar</a>
+            </div>
+        </section>
     </main>
-    <footer>
+    <footer class="ffooter">
+        <h2>Contactanos haciendo click en nuestras redes! &copy; <span id="year"></span></h2>
+        <ul>
+            <li>Instagram: <a href="https://www.instagram.com/"><img src="../assets/img/instagram-logo.png" alt="Instagram"></a></li>
+            <li>Twitter/X: <a href="https://www.x.com/"><img src="../assets/img/twitter-logo.png" alt="Twitter"></a></li>
+            <li>Facebook: <a href="https://www.facebook.com/"><img src="../assets/img/facebook-logo.png" alt="Facebook"></a></li>
+            <li>WhatsApp: <a href="https://www.whatsapp.com/"><img src="../assets/img/whatsapp-logo.png" alt="WhatsApp"></a></li>
+            <li>Mail: <a href="mailto:pedidos@musicstore.com.ar"><img src="../assets/img/mail-logo.png" alt="Mail"></a></li>
+        </ul>
     </footer>
     <script src="./js/index.js"></script>
 </body>
