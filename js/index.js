@@ -1,3 +1,4 @@
+// guardar datos de usuario en ls y mostrar mensaje de bienvenida
 function obtenerDatosUsuario() {
     const nombreCompleto = document.getElementById("nombreCompleto").value;
     const edad = document.getElementById("edad").value;
@@ -6,7 +7,11 @@ function obtenerDatosUsuario() {
     localStorage.setItem('usuario', JSON.stringify(usuario));
 
     const primerNombre = nombreCompleto.split(' ')[0];
-    document.getElementById("mensajeBienvenida").textContent = `¡Bienvenido, ${primerNombre}!`;
+    const mensajeBienvenida = document.getElementById("mensajeBienvenida");
+
+    if (mensajeBienvenida) {
+        mensajeBienvenida.textContent = `¡Bienvenido, ${primerNombre}!`;
+    }
 }
 
 function crearArtista() {
@@ -15,7 +20,10 @@ function crearArtista() {
     const artista = { nombre: artistaSeleccionado };
     localStorage.setItem('artista', JSON.stringify(artista));
 
-    document.getElementById("tituloProductos").textContent = `Productos disponibles: ${artistaSeleccionado}`;
+    const tituloProductos = document.getElementById("tituloProductos");
+    if (tituloProductos) {
+        tituloProductos.textContent = `Productos disponibles: ${artistaSeleccionado}`;
+    }
 }
 
 // productos / precios
@@ -64,7 +72,8 @@ function agregarProducto(indiceProducto, cantidad = 1) {
 function mostrarCarrito() {
     const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     const contenidoCarrito = document.getElementById("contenidoCarrito");
-    contenidoCarrito.innerHTML = "";
+    if (contenidoCarrito) {
+        contenidoCarrito.innerHTML = "";
 
     carrito.forEach((item, index) => {
         const productoHTML = document.createElement("div");
@@ -82,7 +91,7 @@ function mostrarCarrito() {
     }
 
     calcularTotalCompra();
-}
+}}
 
 function eliminarProducto(index) {
     carrito.splice(index, 1);
@@ -127,6 +136,7 @@ function manejarCuotas() {
         document.getElementById("resultadoCuotas").textContent = "Por favor, ingrese una cantidad de cuotas válida (1-12).";
     }
 }
+
 function realizarCompra() {
     const totalCompra = carrito.reduce((total, item) => total + item.precio * item.cantidad, 0);
     const cantidadCuotas = parseInt(document.getElementById("cantidadCuotas").value);
@@ -155,23 +165,35 @@ function realizarCompra() {
         alert("El carrito está vacío. No hay nada que comprar.");
     }
 }
+
 // datos del usuario y artista al inicio
 window.onload = function () {
     const usuario = JSON.parse(localStorage.getItem('usuario'));
     if (usuario) {
         const primerNombre = usuario.nombre.split(' ')[0];
-        document.getElementById("mensajeBienvenida").textContent = `¡Bienvenido, ${primerNombre}!`;
+        const mensajeBienvenida = document.getElementById("mensajeBienvenida");
+
+        if (mensajeBienvenida) {
+            mensajeBienvenida.textContent = `¡Bienvenido, ${primerNombre}!`;
+        }
     }
 
     const artista = JSON.parse(localStorage.getItem('artista'));
     if (artista) {
-        document.getElementById("tituloProductos").textContent = `Productos disponibles: ${artista.nombre}`;
+        const tituloProductos = document.getElementById("tituloProductos");
+        if (tituloProductos) {
+            tituloProductos.textContent = `Productos disponibles: ${artista.nombre}`;
+        }
     }
 
-    mostrarCarrito();
+    if (document.getElementById("contenidoCarrito")) {
+        mostrarCarrito();
+    }
 
     // evento botón de compra
-    document.getElementById("comprar").addEventListener("click", realizarCompra);
+    const botonComprar = document.getElementById("comprar");
+if (botonComprar) {
+    botonComprar.addEventListener("click", realizarCompra);
 };
 
 document.addEventListener('DOMContentLoaded', (event) => {
@@ -179,4 +201,131 @@ document.addEventListener('DOMContentLoaded', (event) => {
     if (yearSpan) {
         yearSpan.textContent = new Date().getFullYear();
     }
+})
+}
+document.getElementById('load-artists').addEventListener('click', fetchArtists);
+//itunes api
+function fetchArtists() {
+    fetch('https://itunes.apple.com/search?term=rock&media=music&limit=5')
+        .then(response => response.json())
+        .then(data => {
+            renderArtists(data.results);
+        })
+        .catch(error => {
+            console.error('Error al cargar los artistas:', error);
+        });
+}
+
+// render artistas en el DOM
+function renderArtists(artists) {
+    const artistsContainer = document.getElementById('artists-container');
+    artistsContainer.innerHTML = '';
+
+    artists.forEach(artist => {
+        const artistCard = document.createElement('div');
+        artistCard.classList.add('artist-card');
+
+        artistCard.innerHTML = `
+            <img src="${artist.artworkUrl100}" alt="${artist.artistName}">
+            <h3>${artist.artistName}</h3>
+            <p>${artist.collectionName}</p>
+            <a href="${artist.collectionViewUrl}" target="_blank">Escuchar en iTunes</a>
+        `;
+
+        artistsContainer.appendChild(artistCard);
+    });
+    //animacion
+    anime({
+        targets: '.artist',
+        opacity: [0, 1],
+        translateY: [-30, 0],
+        easing: 'easeOutExpo',
+        duration: 1000,
+        delay: anime.stagger(100)
+    });
+}
+// Spotify API Token (Ensure it's dynamically generated in production)
+const token = 'BQDl1neSYtOVXd5La5gP8lpy7l9rxIDALH82Qc5kv6hD_6A3H7BUUqnpRVLy2xGwk-0gA83_3qX9iHp4tGwzxM1J76AzVmDtfz-BjVenEEOLpm45dnFEMB04rTu40AZ2ItmFDfzhT6JIYTtRAS_Uou8ysxqPAOMi9KQBlcWJQERivmHA_SrCU2df23KyiBnnQhk_IMTvFiwFE0IpgocLzAyOO_8XVF7K7KmguxMU8ap7VjCsO6kuGCSGwrwVmPbXrlmY0n_SaQ'; // mi token de spotify para dar uso al simulacro
+// Helper function to fetch from Spotify's Web API
+async function fetchSpotifyApi(endpoint, method, body = null) {
+    const res = await fetch(`https://api.spotify.com/${endpoint}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        method,
+        body: body ? JSON.stringify(body) : null,
+    });
+    return await res.json();
+}
+
+// Handle Spotify Login (Redirect to Spotify login page)
+document.getElementById('spotify-login').addEventListener('click', () => {
+    const clientId = '9bf7b8d6ca66465387f3e8ab544336af';
+    const redirectUri = 'https://tobiasmansilla.github.io/preEntregaTobiasMansillaJavaScript/pages/tienda.html';
+    const scope = 'user-top-read playlist-modify-private';
+    const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${redirectUri}&scope=${scope}`;
+    window.location.href = authUrl;
 });
+
+// Fetch Top 5 Tracks
+async function getTopTracks() {
+    const topTracks = await fetchSpotifyApi('v1/me/top/tracks?time_range=long_term&limit=5', 'GET');
+    const tracksContainer = document.getElementById('top-tracks-container');
+    tracksContainer.innerHTML = '';
+    topTracks.items.forEach(track => {
+        tracksContainer.innerHTML += `<p>${track.name} by ${track.artists.map(artist => artist.name).join(', ')}</p>`;
+    });
+}
+
+document.getElementById('load-top-tracks').addEventListener('click', getTopTracks);
+
+// Fetch Recommendations based on Top Tracks
+async function getRecommendations() {
+    const topTracksIds = ['30TcFxtFyju8isK6Hjo9KY', '5mCPDVBb16L4XQwDdbRUpz', '6P9fFbnwWYASamPwhfUunp', '3Y8Y9GWlUBTTEY6ydINRtx', '52SDL4dHqN4YtBslw8o49E'];
+    const recommendations = await fetchSpotifyApi(`v1/recommendations?limit=5&seed_tracks=${topTracksIds.join(',')}`, 'GET');
+    const recommendationsContainer = document.getElementById('recommendations-container');
+    recommendationsContainer.innerHTML = '';
+    recommendations.tracks.forEach(track => {
+        recommendationsContainer.innerHTML += `<p>${track.name} by ${track.artists.map(artist => artist.name).join(', ')}</p>`;
+    });
+}
+
+document.getElementById('load-recommendations').addEventListener('click', getRecommendations);
+
+// Create a Playlist
+async function createPlaylist() {
+    const topTracksUris = [
+        'spotify:track:30TcFxtFyju8isK6Hjo9KY', 'spotify:track:3ejvAIZxccW0Yio4a72ukg', 'spotify:track:5mCPDVBb16L4XQwDdbRUpz',
+        'spotify:track:0k3FoQJouDmGRLEuDWwkM9', 'spotify:track:6P9fFbnwWYASamPwhfUunp', 'spotify:track:0oufSLnKQDoBFX5mgkDCgR',
+        'spotify:track:3Y8Y9GWlUBTTEY6ydINRtx', 'spotify:track:5Oj1BiXYl0VIfozhu8Qd07', 'spotify:track:52SDL4dHqN4YtBslw8o49E', 'spotify:track:6Y28XrCPhKcBRoeCNrRJGg'
+    ];
+
+    const { id: user_id } = await fetchSpotifyApi('v1/me', 'GET');
+    const playlist = await fetchSpotifyApi(`v1/users/${user_id}/playlists`, 'POST', {
+        "name": "My Recommendation Playlist",
+        "description": "Playlist created from top tracks and recommendations",
+        "public": false,
+    });
+    
+    await fetchSpotifyApi(`v1/playlists/${playlist.id}/tracks?uris=${topTracksUris.join(',')}`, 'POST');
+    
+    return playlist;
+}
+
+// Listen to Playlist
+async function embedPlaylist() {
+    const playlist = await createPlaylist();
+    const playlistId = playlist.id;
+    const playlistEmbed = `
+        <iframe
+          title="Spotify Playlist"
+          src="https://open.spotify.com/embed/playlist/${playlistId}"
+          width="100%" height="380" frameborder="0"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy">
+        </iframe>
+    `;
+    document.getElementById('spotify-playlist').innerHTML = playlistEmbed;
+}
+
+document.getElementById('load-recommendations').addEventListener('click', embedPlaylist);

@@ -18,39 +18,67 @@
         </nav>
     </header>
     <main>
-        <section class="seccion-artista">
-            <h2>Elige un Artista</h2>
-            <label for="nombreArtista">Nombre del Artista:</label>
-            <input type="text" id="nombreArtista" required>
-            <button onclick="crearArtista()">Guardar Artista</button>
-        </section>
-    
-        <section class="seccion-productos">
-            <h2 id="tituloProductos">Productos disponibles:</h2>
-            <button onclick="mostrarPrecios()">Mostrar Precios</button>
-            <div id="preciosProductos"></div>
-        </section>
-    
-        <section class="seccion-carrito">
-            <h2>Carrito de Compras</h2>
-            <button onclick="mostrarCarrito()">Mostrar Carrito</button>
-            <div id="contenidoCarrito"></div>
-        </section>
-    
-        <section class="seccion-total">
-            <h2>Total de la Compra</h2>
-            <p id="totalPesos"></p>
-            <h3>Calcular Cuotas</h3>
-            <label for="cantidadCuotas">Número de Cuotas:</label>
-            <input type="number" id="cantidadCuotas" min="1" max="12">
-            <button onclick="manejarCuotas()">Calcular</button>
-            <p id="resultadoCuotas"></p>
-            <div id="totalCompraContainer">
-                <p id="totalCompra">Total de la Compra: $0</p>
-                <button onclick="realizarCompra()">Comprar</button>
-            </div>
+        <div class="content-wrapper">
+            <!-- Sección principal del simulador de compra -->
+            <section class="main-section">
+                <section class="seccion-artista">
+                    <h2>Elige un Artista</h2>
+                    <label for="nombreArtista">Nombre del Artista:</label>
+                    <input type="text" id="nombreArtista" required>
+                    <button onclick="crearArtista()">Guardar Artista</button>
+                </section>
             
-        </section>
+                <section class="seccion-productos">
+                    <h2 id="tituloProductos">Productos disponibles:</h2>
+                    <button onclick="mostrarPrecios()">Mostrar Precios</button>
+                    <div id="preciosProductos"></div>
+                </section>
+            
+                <section class="seccion-carrito">
+                    <h2>Carrito de Compras</h2>
+                    <button onclick="mostrarCarrito()">Mostrar Carrito</button>
+                    <div id="contenidoCarrito"></div>
+                </section>
+            
+                <section class="seccion-total">
+                    <h2>Total de la Compra</h2>
+                    <p id="totalPesos"></p>
+                    <h3>Calcular Cuotas</h3>
+                    <label for="cantidadCuotas">Número de Cuotas:</label>
+                    <input type="number" id="cantidadCuotas" min="1" max="12">
+                    <button onclick="manejarCuotas()">Calcular</button>
+                    <p id="resultadoCuotas"></p>
+                    <div id="totalCompraContainer">
+                        <p id="totalCompra">Total de la Compra: $0</p>
+                        <button onclick="realizarCompra()">Comprar</button>
+                    </div>
+                </section>
+            </section>
+
+            <!-- Sección para mostrar los artistas desde la API -->
+            <section class="artists-section">
+                <h2>Artistas Populares</h2>
+                <button id="load-artists">Cargar Artistas</button>
+                <div id="artists-container"></div>
+                
+                <!-- Spotify autenticación y canciones -->
+                <h2>Login with Spotify</h2>
+                <button id="spotify-login">Log In with Spotify</button>
+            
+                <h2>Top 5 Canciones de Spotify</h2>
+                <button id="load-top-tracks">Cargar Top Tracks</button>
+                <div id="top-tracks-container"></div>
+            
+                <h2>Recomendaciones Basadas en el Top 5</h2>
+                <button id="load-recommendations">Cargar Recomendaciones</button>
+                <div id="recommendations-container"></div>
+            
+                <h2>Escucha la Playlist</h2>
+                <div id="spotify-playlist">
+                    <!-- playlist -->
+                </div>
+            </section>
+        </div>
     </main>
     <footer class="ffooter">
         <h2>Contactanos haciendo click en nuestras redes! &copy; <span id="year"></span></h2>
@@ -63,5 +91,6 @@
         </ul>
     </footer>
     <script src="../js/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
