@@ -199,6 +199,12 @@ p {
 }
 
 /* Sección de apod */
+#seccionqcy{
+    justify-content: space-around;
+    width: auto;
+    display: flex;
+    flex-direction: row;
+}
 .apod-section {
     width:25%;
     padding: 20px;
