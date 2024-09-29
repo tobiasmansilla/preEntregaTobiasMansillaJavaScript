@@ -193,12 +193,10 @@ p {
     justify-content: space-between;
 }
 
-/* Sección principal del simulador */
 .main-section {
     width: 65%;
 }
 
-/* Sección de apod */
 #seccionqcy{
     justify-content: space-around;
     width: auto;
@@ -269,7 +267,6 @@ p {
     background-color: #0056b3;
 }
 
-/* Efecto hover para las cards */
 .artist-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);

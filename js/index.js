@@ -166,7 +166,6 @@ function realizarCompra() {
     }
 }
 
-// datos del usuario y artista al inicio
 window.onload = function () {
     const usuario = JSON.parse(localStorage.getItem('usuario'));
     if (usuario) {
@@ -190,7 +189,6 @@ window.onload = function () {
         mostrarCarrito();
     }
 
-    // evento botón de compra
     const botonComprar = document.getElementById("comprar");
 if (botonComprar) {
     botonComprar.addEventListener("click", realizarCompra);
@@ -231,5 +229,4 @@ function renderAPOD(data) {
     `;
 }
 
-// Llama a la función al cargar la página
 document.addEventListener('DOMContentLoaded', fetchAPOD);
