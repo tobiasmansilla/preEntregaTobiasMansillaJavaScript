@@ -6,6 +6,7 @@
     <title>Music Store</title>
     <link rel="shortcut icon" href="../assets/img/logoMusic.ico" type="image/x-icon">
     <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 </head>
 <body>
     <header class="hheader">
@@ -54,29 +55,10 @@
                     </div>
                 </section>
             </section>
-
-            <!-- Sección para mostrar los artistas desde la API -->
-            <section class="artists-section">
-                <h2>Artistas Populares</h2>
-                <button id="load-artists">Cargar Artistas</button>
-                <div id="artists-container"></div>
-                
-                <!-- Spotify autenticación y canciones -->
-                <h2>Login with Spotify</h2>
-                <button id="spotify-login">Log In with Spotify</button>
-            
-                <h2>Top 5 Canciones de Spotify</h2>
-                <button id="load-top-tracks">Cargar Top Tracks</button>
-                <div id="top-tracks-container"></div>
-            
-                <h2>Recomendaciones Basadas en el Top 5</h2>
-                <button id="load-recommendations">Cargar Recomendaciones</button>
-                <div id="recommendations-container"></div>
-            
-                <h2>Escucha la Playlist</h2>
-                <div id="spotify-playlist">
-                    <!-- playlist -->
-                </div>
+            <section class="apod-section">
+                <h2>La Imagen Astronómica del Día</h2>
+                <p>Porque mientras los acordes resuenan, las estrellas también tienen su propio espectáculo. Déjate llevar por los misterios cósmicos, y quién sabe, tal vez encuentres inspiración para tu próxima playlist... o simplemente disfrutes de una vista intergaláctica.</p>
+                <div id="apod-container"></div>
             </section>
         </div>
     </main>
@@ -92,5 +74,6 @@
     </footer>
     <script src="../js/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="path/to/your/javascript/file.js"></script>
 </body>
 </html>

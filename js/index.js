@@ -203,129 +203,33 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 })
 }
-document.getElementById('load-artists').addEventListener('click', fetchArtists);
-//itunes api
-function fetchArtists() {
-    fetch('https://itunes.apple.com/search?term=rock&media=music&limit=5')
-        .then(response => response.json())
-        .then(data => {
-            renderArtists(data.results);
-        })
-        .catch(error => {
-            console.error('Error al cargar los artistas:', error);
-        });
+// nasa
+const apiKey = '3D53mi2OlRmrzthCbrOjNg6mzrnoOLKkz1aPXxzk'; // Tu API key
+const url = `https://api.nasa.gov/planetary/apod?api_key=${apiKey}`;
+
+async function fetchAPOD() {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+        const data = await response.json();
+        renderAPOD(data);
+    } catch (error) {
+        console.error('Error fetching APOD:', error);
+    }
 }
 
-// render artistas en el DOM
-function renderArtists(artists) {
-    const artistsContainer = document.getElementById('artists-container');
-    artistsContainer.innerHTML = '';
+function renderAPOD(data) {
+    const apodContainer = document.getElementById('apod-container');
 
-    artists.forEach(artist => {
-        const artistCard = document.createElement('div');
-        artistCard.classList.add('artist-card');
-
-        artistCard.innerHTML = `
-            <img src="${artist.artworkUrl100}" alt="${artist.artistName}">
-            <h3>${artist.artistName}</h3>
-            <p>${artist.collectionName}</p>
-            <a href="${artist.collectionViewUrl}" target="_blank">Escuchar en iTunes</a>
-        `;
-
-        artistsContainer.appendChild(artistCard);
-    });
-    //animacion
-    anime({
-        targets: '.artist',
-        opacity: [0, 1],
-        translateY: [-30, 0],
-        easing: 'easeOutExpo',
-        duration: 1000,
-        delay: anime.stagger(100)
-    });
-}
-// Spotify API Token (Ensure it's dynamically generated in production)
-const token = 'BQDl1neSYtOVXd5La5gP8lpy7l9rxIDALH82Qc5kv6hD_6A3H7BUUqnpRVLy2xGwk-0gA83_3qX9iHp4tGwzxM1J76AzVmDtfz-BjVenEEOLpm45dnFEMB04rTu40AZ2ItmFDfzhT6JIYTtRAS_Uou8ysxqPAOMi9KQBlcWJQERivmHA_SrCU2df23KyiBnnQhk_IMTvFiwFE0IpgocLzAyOO_8XVF7K7KmguxMU8ap7VjCsO6kuGCSGwrwVmPbXrlmY0n_SaQ'; // mi token de spotify para dar uso al simulacro
-// Helper function to fetch from Spotify's Web API
-async function fetchSpotifyApi(endpoint, method, body = null) {
-    const res = await fetch(`https://api.spotify.com/${endpoint}`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-        method,
-        body: body ? JSON.stringify(body) : null,
-    });
-    return await res.json();
-}
-
-// Handle Spotify Login (Redirect to Spotify login page)
-document.getElementById('spotify-login').addEventListener('click', () => {
-    const clientId = '9bf7b8d6ca66465387f3e8ab544336af';
-    const redirectUri = 'https://tobiasmansilla.github.io/preEntregaTobiasMansillaJavaScript/pages/tienda.html';
-    const scope = 'user-top-read playlist-modify-private';
-    const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${redirectUri}&scope=${scope}`;
-    window.location.href = authUrl;
-});
-
-// Fetch Top 5 Tracks
-async function getTopTracks() {
-    const topTracks = await fetchSpotifyApi('v1/me/top/tracks?time_range=long_term&limit=5', 'GET');
-    const tracksContainer = document.getElementById('top-tracks-container');
-    tracksContainer.innerHTML = '';
-    topTracks.items.forEach(track => {
-        tracksContainer.innerHTML += `<p>${track.name} by ${track.artists.map(artist => artist.name).join(', ')}</p>`;
-    });
-}
-
-document.getElementById('load-top-tracks').addEventListener('click', getTopTracks);
-
-// Fetch Recommendations based on Top Tracks
-async function getRecommendations() {
-    const topTracksIds = ['30TcFxtFyju8isK6Hjo9KY', '5mCPDVBb16L4XQwDdbRUpz', '6P9fFbnwWYASamPwhfUunp', '3Y8Y9GWlUBTTEY6ydINRtx', '52SDL4dHqN4YtBslw8o49E'];
-    const recommendations = await fetchSpotifyApi(`v1/recommendations?limit=5&seed_tracks=${topTracksIds.join(',')}`, 'GET');
-    const recommendationsContainer = document.getElementById('recommendations-container');
-    recommendationsContainer.innerHTML = '';
-    recommendations.tracks.forEach(track => {
-        recommendationsContainer.innerHTML += `<p>${track.name} by ${track.artists.map(artist => artist.name).join(', ')}</p>`;
-    });
-}
-
-document.getElementById('load-recommendations').addEventListener('click', getRecommendations);
-
-// Create a Playlist
-async function createPlaylist() {
-    const topTracksUris = [
-        'spotify:track:30TcFxtFyju8isK6Hjo9KY', 'spotify:track:3ejvAIZxccW0Yio4a72ukg', 'spotify:track:5mCPDVBb16L4XQwDdbRUpz',
-        'spotify:track:0k3FoQJouDmGRLEuDWwkM9', 'spotify:track:6P9fFbnwWYASamPwhfUunp', 'spotify:track:0oufSLnKQDoBFX5mgkDCgR',
-        'spotify:track:3Y8Y9GWlUBTTEY6ydINRtx', 'spotify:track:5Oj1BiXYl0VIfozhu8Qd07', 'spotify:track:52SDL4dHqN4YtBslw8o49E', 'spotify:track:6Y28XrCPhKcBRoeCNrRJGg'
-    ];
-
-    const { id: user_id } = await fetchSpotifyApi('v1/me', 'GET');
-    const playlist = await fetchSpotifyApi(`v1/users/${user_id}/playlists`, 'POST', {
-        "name": "My Recommendation Playlist",
-        "description": "Playlist created from top tracks and recommendations",
-        "public": false,
-    });
-    
-    await fetchSpotifyApi(`v1/playlists/${playlist.id}/tracks?uris=${topTracksUris.join(',')}`, 'POST');
-    
-    return playlist;
-}
-
-// Listen to Playlist
-async function embedPlaylist() {
-    const playlist = await createPlaylist();
-    const playlistId = playlist.id;
-    const playlistEmbed = `
-        <iframe
-          title="Spotify Playlist"
-          src="https://open.spotify.com/embed/playlist/${playlistId}"
-          width="100%" height="380" frameborder="0"
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-          loading="lazy">
-        </iframe>
+    apodContainer.innerHTML = `
+        <h3>${data.title}</h3>
+        <img src="${data.url}" alt="${data.title}" style="max-width: 100%;">
+        <p>${data.explanation.substring(0, 0)} <a href="${data.hdurl}" target="_blank">Descargá la foto</a></p>
+        <p><strong>Fecha:</strong> ${data.date}</p>
     `;
-    document.getElementById('spotify-playlist').innerHTML = playlistEmbed;
 }
 
-document.getElementById('load-recommendations').addEventListener('click', embedPlaylist);
+// Llama a la función al cargar la página
+document.addEventListener('DOMContentLoaded', fetchAPOD);
